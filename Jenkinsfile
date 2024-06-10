@@ -36,7 +36,7 @@ pipeline {
                 zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
                 ls -ltr
                 """
-            }
+            } // -q (quit --> No need of un-necessary log)
         }
     }
     post {  //This will catch the event and send Alerts to Mail/Slack
