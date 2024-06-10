@@ -26,15 +26,23 @@ pipeline {
                sh """
                 npm install
                 ls -ltr
-                echo $appVersion
+                echo "application version: $appVersion"
                """
+            }
+        }
+        stage('Build'){
+            steps{
+                sh """
+                zip -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                ls -ltr
+                """
             }
         }
     }
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
             echo 'I will always say Hello again!'
-            // deleteDir()
+            deleteDir()
         }
         success { 
             echo 'I will run when pipeline is success'
