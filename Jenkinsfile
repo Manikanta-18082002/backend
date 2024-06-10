@@ -7,11 +7,18 @@ pipeline {
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
+    environment{
+        def appVersion = '' // variable declaration
+    }
     stages {
         stage ('read the version'){
-            steps{
+            steps{ // Variable can be accessed with in that stage only
+                script{ // Groovy Script
                 def packageJson = readJSON file: 'package.json'
                 def appVersion = packageJson.version
+                echo "application version: $appVersion"
+                }
+              
             }
         }
         stage('Install Dependencies') { // init should happen whether apply or destroy
