@@ -15,7 +15,7 @@ pipeline {
             steps{ // Variable can be accessed with in that stage only
                 script{ // Groovy Script
                 def packageJson = readJSON file: 'package.json'
-                def appVersion = packageJson.version
+                appVersion = packageJson.version
                 echo "application version: $appVersion"
                 }
               
