@@ -11,7 +11,7 @@ pipeline {
         stage('test') { // init should happen whether apply or destroy
             steps {
                sh """
-                echp "this is testing"
+                echo "this is testing"
                """
             }
         }
