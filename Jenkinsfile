@@ -8,11 +8,10 @@ pipeline {
         ansiColor('xterm')
     }
     stages {
-        stage('test') { // init should happen whether apply or destroy
+        stage('Install Dependencies') { // init should happen whether apply or destroy
             steps {
                sh """
-                echo "this is testing"
-                ls -ltr
+                npm install
                """
             }
         }
