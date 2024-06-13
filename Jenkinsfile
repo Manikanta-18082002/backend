@@ -39,10 +39,10 @@ pipeline {
                 """
             } // -q (quit --> No need of un-necessary log in jenkins )   -x exclude those files
         }
-        stage('Nexus Artifact Upload'){
+         stage('Nexus Artifact Upload'){
             steps{
                 script{ // Groovy Script for Jenkins
-                     nexusArtifactUploader( // --> This is plugin below code from internet
+                    nexusArtifactUploader( // --> This is plugin below code from internet
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         nexusUrl: "${nexusUrl}", // double quotes --> When using variables
@@ -60,6 +60,7 @@ pipeline {
                 }
             }
         }
+
     //     stage('Deploy'){ // If this success then CI is success
     //         steps{
     //             script{
