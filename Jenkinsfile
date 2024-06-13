@@ -49,9 +49,10 @@ pipeline {
                         groupId: 'com.expense',
                         version: "${appVersion}",
                         repository: "backend",
-                        credentialsId: 'nexus-auth', // Created in Jenkins
+                        credentialsId: 'nexus-auth', 
+                        // Created in Jenkins -->Manage Jenkins --> Credentials --> System --> Global credentials (unrestricted)
                         artifacts: [
-                            [artifactId: "backend" ,
+                            [artifactId: "backend",
                             classifier: '',
                             file: "backend-" + "${appVersion}" + '.zip', // filename: backend-1.1.0.zip
                             type: 'zip']
