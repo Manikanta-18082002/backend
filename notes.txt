@@ -3,5 +3,5 @@ TO run backend we need above
 
 Integrating the code into artifact is called --> CI
 
-CD
--------
+http://44.193.16.140:8081/repository/backend/com/expense/backend/1.1.0/backend-1.1.0.zip --> From nexus downlodable
+zip file
