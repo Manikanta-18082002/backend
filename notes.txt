@@ -1,0 +1,7 @@
+for i in 01-vpc/ 02-sg/ 04-db/ 05-vpn/ 06-app-alb/ ; do cd  $i; terraform apply -auto-approve; cd ..; done
+TO run backend we need above 
+
+Integrating the code into artifact is called --> CI
+
+CD
+-------
