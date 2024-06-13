@@ -11,6 +11,7 @@ pipeline {
         stage('test'){
             steps{
                 sh """
+                npm install
                 echo "This is Testing"
                 ls -ltr
                 """
