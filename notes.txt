@@ -5,3 +5,7 @@ Integrating the code into artifact is called --> CI
 
 http://44.193.16.140:8081/repository/backend/com/expense/backend/1.1.0/backend-1.1.0.zip --> From nexus downlodable
 zip file
+
+http://44.193.16.140:8081/repository/backend/com/expense/backend/1.2.0/backend-1.2.0.zip --> Just version change
+
+CI --> Integrating code into the Artifact 

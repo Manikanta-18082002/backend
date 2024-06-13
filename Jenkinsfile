@@ -62,17 +62,17 @@ pipeline {
             }
         }
 
-    //     stage('Deploy'){ // If this success then CI is success
-    //         steps{
-    //             script{
-    //                 def params = [
-    //                     string(name: 'appVersion', value: "${appVersion}")// define here parameter to use in down stream (backend-deploy)
-    //                 ]
-    //                 build job: 'backend-deploy', parameters: params, wait: false 
-    //             }// false -->don't wait to complete down stream job (I triggered job, I don't wait for down stream to complete the job) 
-    //             // wait: true --> wait until the down stram job is done
-    //         }
-    //     }
+        stage('Deploy'){ // If this success then CI is success
+            steps{ // Down Stream TO CD
+                script{
+                    def params = [
+                        string(name: 'appVersion', value: "${appVersion}")// define here parameter to use in down stream (backend-deploy)
+                    ]
+                    build job: 'backend-deploy', parameters: params, wait: false 
+                }// false -->don't wait to complete down stream job (I triggered job, I don't wait for down stream to complete) 
+                // wait: true --> wait until the down stram job is done
+            }
+        }
      }
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
