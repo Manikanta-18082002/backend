@@ -7,51 +7,37 @@ pipeline {
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
-    stages{
-        stage('test'){
-            steps{
-                sh """
-                npm install
-                echo "This is Testing"
-                ls -ltr
-                """
+    environment{
+        def appVersion = '' // variable declaration in GLOBAL LEVEL
+        // nexusUrl = 'nexus.dawsmani.site:8081'
+    }
+    stages {
+        stage ('read the version'){
+            steps{ // Variable can be accessed with in that stage only
+                script{ // Groovy Script
+                def packageJson = readJSON file: 'package.json'
+                appVersion = packageJson.version
+                echo "application version: $appVersion"
+                }
             }
         }
-    }
-
-
-
-    // environment{
-    //     def appVersion = '' // variable declaration
-    //     nexusUrl = 'nexus.dawsmani.site:8081'
-    // }
-    // stages {
-    //     stage ('read the version'){
-    //         steps{ // Variable can be accessed with in that stage only
-    //             script{ // Groovy Script
-    //             def packageJson = readJSON file: 'package.json'
-    //             appVersion = packageJson.version
-    //             echo "application version: $appVersion"
-    //             }
-    //         }
-    //     }
-    //     stage('Install Dependencies') { // init should happen whether apply or destroy
-    //         steps {
-    //            sh """
-    //             npm install
-    //             ls -ltr
-    //             echo "application version: $appVersion"
-    //            """
-    //         }
-    //     }
-    //     stage('Build'){ // Build == Dependencies + code (zipped)
-    //         steps{
-    //             sh """
-    //             zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
-    //             ls -ltr
-    //             """
-    //         } // -q (quit --> No need of un-necessary log)
-    //     }
+        stage('Install Dependencies') { // init should happen whether apply or destroy
+            steps {
+               sh """
+                npm install
+                ls -ltr
+                echo "application version: $appVersion"
+               """
+            }
+        }
+        stage('Build'){ // Build == Dependencies + code (zipped)
+            steps{
+                sh """
+                zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                ls -ltr
+                """
+            } // -q (quit --> No need of un-necessary log in jenkins )   -x exclude those files
+        }
     //     stage('Nexus Artifact Upload'){
     //         steps{
     //             script{ // Groovy Script for Jenkins
@@ -84,7 +70,7 @@ pipeline {
     //             // wait: true --> wait until the down stram job is done
     //         }
     //     }
-    // }
+     }
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
             echo 'I will always say Hello again!'
