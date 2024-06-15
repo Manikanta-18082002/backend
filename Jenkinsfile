@@ -56,13 +56,13 @@ pipeline {
             }
         }
 
-        // stage("Quality Gate") {
-        //     steps {
-        //       timeout(time: 30, unit: 'MINUTES') {
-        //         waitForQualityGate abortPipeline: true
-        //       }
-        //     }
-        // }
+        stage("Quality Gate") {
+            steps {
+              timeout(time: 30, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true // --? If Quality Gate Fail then fail the PipeLine
+              }
+            }
+        }
 
 
          stage('Nexus Artifact Upload'){
@@ -90,7 +90,7 @@ pipeline {
 
         stage('Deploy'){ // If this success then CI is success
         when{ //From Line 13
-            expression{ // If this expression is true then below steps will trun
+            expression{ // If this expression is true then below steps (backend-deploy) will run
                 params.deploy
             }
         }
