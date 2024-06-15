@@ -7,6 +7,9 @@ pipeline {
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
+    parameters{
+        booleanParam(name: 'deploy', defaultValue: false, description: 'Toggle this value')
+    }
     environment{
         def appVersion = '' // variable declaration in GLOBAL LEVEL
         nexusUrl = 'nexus.dawsmani.site:8081'
@@ -86,6 +89,11 @@ pipeline {
         }
 
         stage('Deploy'){ // If this success then CI is success
+        when{ //From Line 13
+            expression{ // If this expression is true then below steps will trun
+                params.deploy
+            }
+        }
             steps{ // Down Stream TO CD
                 script{
                     def params = [
