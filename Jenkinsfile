@@ -43,67 +43,75 @@ pipeline {
             } // -q (quit --> No need of un-necessary log in jenkins )   -x exclude those files
         }
 
-        stage('Sonar Scan'){
-            environment {
-                scannerHome = tool 'sonar' //referring scanner CLI
-            }
-            steps {
-                script {
-                    withSonarQubeEnv('sonar') { //referring sonar server
-                        sh "${scannerHome}/bin/sonar-scanner" // Sonar Scanner by default searches wih (sonar-project.properties)
-                    }
-                }
-            }
-        }
-
-        stage("Quality Gate") {
-            steps {
-              timeout(time: 30, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true // --? If Quality Gate Fail then fail the PipeLine
-              }
-            }
-        }
-
-
-         stage('Nexus Artifact Upload'){
+        stage('Docker build'){
             steps{
-                script{ // Groovy Script for Jenkins
-                    nexusArtifactUploader( // --> This is plugin below code from internet
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: "${nexusUrl}", // double quotes --> When using variables
-                        groupId: 'com.expense',
-                        version: "${appVersion}",
-                        repository: "backend",
-                        credentialsId: 'nexus-auth', 
-                        // Created in Jenkins -->Manage Jenkins --> Credentials --> System --> Global credentials (unrestricted)
-                        artifacts: [
-                            [artifactId: "backend",
-                            classifier: '',
-                            file: "backend-" + "${appVersion}" + '.zip', // filename: backend-1.1.0.zip
-                            type: 'zip']
-                        ]
-                    )
-                }
+                sh """
+                    docker build -t backend:${appVersion} .
+                """
             }
         }
 
-        stage('Deploy'){ // If this success then CI is success
-        when{ //From Line 13
-            expression{ // If this expression is true then below steps (backend-deploy) will run
-                params.deploy
-            }
-        }
-            steps{ // Down Stream TO CD
-                script{
-                    def params = [
-                        string(name: 'appVersion', value: "${appVersion}")// define here parameter to use in down stream (backend-deploy)
-                    ]
-                    build job: 'backend-deploy', parameters: params, wait: false 
-                }// false -->don't wait to complete down stream job (I triggered job, I don't wait for down stream to complete) 
-                // wait: true --> wait until the down stram job is done
-            }
-        }
+        // stage('Sonar Scan'){
+        //     environment {
+        //         scannerHome = tool 'sonar' //referring scanner CLI
+        //     }
+        //     steps {
+        //         script {
+        //             withSonarQubeEnv('sonar') { //referring sonar server
+        //                 sh "${scannerHome}/bin/sonar-scanner" // Sonar Scanner by default searches wih (sonar-project.properties)
+        //             }
+        //         }
+        //     }
+        // }
+
+        // stage("Quality Gate") {
+        //     steps {
+        //       timeout(time: 30, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true // --? If Quality Gate Fail then fail the PipeLine
+        //       }
+        //     }
+        // }
+
+
+        //  stage('Nexus Artifact Upload'){
+        //     steps{
+        //         script{ // Groovy Script for Jenkins
+        //             nexusArtifactUploader( // --> This is plugin below code from internet
+        //                 nexusVersion: 'nexus3',
+        //                 protocol: 'http',
+        //                 nexusUrl: "${nexusUrl}", // double quotes --> When using variables
+        //                 groupId: 'com.expense',
+        //                 version: "${appVersion}",
+        //                 repository: "backend",
+        //                 credentialsId: 'nexus-auth', 
+        //                 // Created in Jenkins -->Manage Jenkins --> Credentials --> System --> Global credentials (unrestricted)
+        //                 artifacts: [
+        //                     [artifactId: "backend",
+        //                     classifier: '',
+        //                     file: "backend-" + "${appVersion}" + '.zip', // filename: backend-1.1.0.zip
+        //                     type: 'zip']
+        //                 ]
+        //             )
+        //         }
+        //     }
+        // }
+
+        // stage('Deploy'){ // If this success then CI is success
+        // when{ //From Line 13
+        //     expression{ // If this expression is true then below steps (backend-deploy) will run
+        //         params.deploy
+        //     }
+        // }
+        //     steps{ // Down Stream TO CD
+        //         script{
+        //             def params = [
+        //                 string(name: 'appVersion', value: "${appVersion}")// define here parameter to use in down stream (backend-deploy)
+        //             ]
+        //             build job: 'backend-deploy', parameters: params, wait: false 
+        //         }// false -->don't wait to complete down stream job (I triggered job, I don't wait for down stream to complete) 
+        //         // wait: true --> wait until the down stram job is done
+        //     }
+        // }
      }
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
