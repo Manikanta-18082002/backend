@@ -48,7 +48,19 @@ pipeline {
        stage('Docker build'){
             steps{
                 sh """
-                    aws eks update-kubeconfig --region us-east-1 --name expense-dev
+                    aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${account_id}.dkr.ecr.${region}.amazonaws.com
+
+                    docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/expense-backend:${appVersion} .
+
+                    docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/expense-backend:${appVersion}
+                """
+            }
+        }
+
+        stage('Deploy'){
+            steps{
+                """ 
+                    aws eks update-kubeconfig --region us-east-1 --name expens-dev
                     cd helm
                     sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                     helm install backend .
