@@ -48,6 +48,7 @@ pipeline {
        stage('Docker build'){
             steps{
                 sh """
+                    aws eks update-kubeconfig --region us-east-1 --name expense-dev
                     cd helm
                     sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                     helm install backend .
