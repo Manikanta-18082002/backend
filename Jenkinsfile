@@ -65,7 +65,7 @@ pipeline {
                     sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                     helm install backend .
                 """
-            }
+            } // 1st helm install backend .   2nd helm upgrade backend .
         }
 
         // stage('Sonar Scan'){
